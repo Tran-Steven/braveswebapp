@@ -129,6 +129,7 @@ export default function BravesMain() {
 
   return (
     <div className="p-4 max-w-screen-lg mx-auto">
+      {/* Selection Section */}
       <section className="mt-4">
         <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
           Select Batter and Pitcher
@@ -165,26 +166,10 @@ export default function BravesMain() {
         </div>
       </section>
 
-      {prediction && prediction.video_links.length > 0 && (
-        <section className="mt-6">
-          <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
-            Video Highlights
-          </h2>
-          <div className="mt-4 p-4 border rounded bg-gray-100">
-            {prediction.video_links.map((link, index) => (
-              <div key={index} className="mb-4">
-                <video width="100%" controls>
-                  <source src={link} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
+      {/* Prediction Section */}
       {prediction && (
         <>
+          {/* Head-to-Head Performance */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
               {selectedBatterName} vs. {selectedPitcherName}
@@ -210,6 +195,7 @@ export default function BravesMain() {
             </div>
           </section>
 
+          {/* Outcome Distribution Bar Chart */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
               Outcome Distribution
@@ -226,6 +212,7 @@ export default function BravesMain() {
             </div>
           </section>
 
+          {/* Batting Average Over Time Line Chart */}
           {prediction.performance_over_time && (
             <section className="mt-6">
               <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
@@ -248,6 +235,7 @@ export default function BravesMain() {
             </section>
           )}
 
+          {/* Outcome Percentage Pie Chart */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
               Outcome Percentage
@@ -277,6 +265,25 @@ export default function BravesMain() {
               </ResponsiveContainer>
             </div>
           </section>
+
+          {/* Video Highlights Section moved to the end */}
+          {prediction.video_links.length > 0 && (
+            <section className="mt-6">
+              <h2 className="text-lg font-semibold border-b-2 border-black pb-2 text-gray-800">
+                Video Highlights
+              </h2>
+              <div className="mt-4 p-4 border rounded bg-gray-100">
+                {prediction.video_links.map((link, index) => (
+                  <div key={index} className="mb-4">
+                    <video width="100%" controls>
+                      <source src={link} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
     </div>
