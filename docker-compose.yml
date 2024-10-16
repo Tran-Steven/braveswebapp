@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+    networks:
+      - braves_network
+
+  db_init:
+    image: postgres:15
+    volumes:
+      - ./data.sql:/data.sql
+    environment:
+      PGPASSWORD: your_password
+    command: >
+      sh -c "
+        until pg_isready -h db; do
+          sleep 1;
+        done;
+        echo 'Database is ready';
+        psql -h db -U your_username -d your_db_name -f /data.sql;
+      "
+    depends_on:
+      - db
+    networks:
+      - braves_network
+    restart: "no"
+
+  web:
+    build: ./braves_webapp
+    command: sh -c "until pg_isready -h db; do sleep 1; done && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./braves_webapp:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_NAME: your_db_name
+      DATABASE_USER: your_username
+      DATABASE_PASSWORD: your_password
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+    depends_on:
+      - db_init
+    networks:
+      - braves_network
+
+  frontend:
+    build: ./braves_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+    networks:
+      - braves_network
+
+networks:
+  braves_network:
+
+volumes:
+  postgres_data:
